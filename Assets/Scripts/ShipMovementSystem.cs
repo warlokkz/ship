@@ -1,4 +1,6 @@
 ﻿using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Transforms;
 using UnityEngine;
 
 namespace Ship.Project
@@ -7,12 +9,28 @@ namespace Ship.Project
 	{
 		protected override void OnUpdate()
 		{
-			var deltaTime = Time.deltaTime;
-			Entities.ForEach((Rigidbody rigidBody, InputComponent inputComponent) =>
+			Entities.ForEach<Translation, InputComponent>((ref Translation translation, ref InputComponent inputComponent) =>
 			{
-				var moveVector = new Vector3(inputComponent.Horizontal, 0, inputComponent.Vertical);
-				var movePosition = rigidBody.position + moveVector.normalized * 3 * deltaTime;
-				rigidBody.MovePosition(movePosition);
+				var deltaTime = Time.deltaTime;
+
+				var y = translation.Value.y + inputComponent.Vertical * deltaTime;
+				
+				if (translation.Value.y >= 3)
+				{
+					y = translation.Value.y - inputComponent.Vertical * deltaTime;
+				}
+
+				if (translation.Value.y <= -3)
+				{
+					y = translation.Value.y + inputComponent.Vertical * deltaTime;
+				}
+				
+				translation.Value = new float3
+				{
+					x = translation.Value.x + inputComponent.Horizontal * deltaTime,
+					y = y,
+					z = 0
+				};
 			});
 		}
 	}
