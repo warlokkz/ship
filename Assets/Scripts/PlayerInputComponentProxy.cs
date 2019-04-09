@@ -1,21 +1,20 @@
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Ship.Project
 {
 	[RequiresEntityConversion]
-	public class InputComponentProxy : MonoBehaviour, IConvertGameObjectToEntity
+	public class PlayerInputComponentProxy : MonoBehaviour, IConvertGameObjectToEntity
 	{
-		public float Horizontal;
-		public float Vertical;
+		public float2 Move;
 		
 		// The MonoBehaviour data is converted to ComponentData on the entity.
 		public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
 		{
-			var data = new InputComponent
+			var data = new PlayerInputData
 			{
-				Horizontal = Horizontal,
-				Vertical = Vertical
+				Move = Move
 			};
 			
 			dstManager.AddComponentData(entity, data);
