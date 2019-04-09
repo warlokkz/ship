@@ -6,18 +6,9 @@ namespace Ship.Project
 {
 	public class PlayerInputSystem : ComponentSystem
 	{
-		private EntityQuery Query;
-
-		protected override void OnCreate()
-		{
-			Query = GetEntityQuery(
-				ComponentType.ReadOnly<PlayerInputData>()
-			);
-		}
-
 		protected override void OnUpdate()
 		{
-			Entities.With(Query).ForEach(entity =>
+			Entities.ForEach((Entity entity, ref PlayerInputData input)  =>
 			{
 				var inputData = new PlayerInputData
 				{
