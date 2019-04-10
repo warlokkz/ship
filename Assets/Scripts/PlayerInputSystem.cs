@@ -10,10 +10,12 @@ namespace Ship.Project
 		{
 			Entities.ForEach((Entity entity, ref PlayerInputData input)  =>
 			{
+				
 				var inputData = new PlayerInputData
 				{
-					Move = new float2(
+					Move = new float3(
 						Input.GetAxisRaw("Horizontal"),
+						0,
 						Input.GetAxisRaw("Vertical")
 					)
 				};

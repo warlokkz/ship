@@ -20,8 +20,8 @@ namespace Ship.Project
 				translation.Value = new float3
 				{
 					x = translation.Value.x + input.Move.x * DeltaTime,
-					y = translation.Value.y + input.Move.y * DeltaTime,
-					z = 0
+					y = translation.Value.y,
+					z = translation.Value.z + input.Move.z * DeltaTime
 				};
 			}
 		}

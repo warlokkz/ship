@@ -7,6 +7,6 @@ namespace Ship.Project
 	[Serializable]
 	public struct PlayerInputData : IComponentData
 	{
-		public float2 Move;
+		public float3 Move;
 	}
 }

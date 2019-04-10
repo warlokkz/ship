@@ -1,22 +1,18 @@
 using Unity.Entities;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace Ship.Project
 {
 	[RequiresEntityConversion]
-	public class PlayerInputComponentProxy : MonoBehaviour, IConvertGameObjectToEntity
+	public class ClickInputProxy : MonoBehaviour, IConvertGameObjectToEntity
 	{
-		public float3 Move;
-		
 		// The MonoBehaviour data is converted to ComponentData on the entity.
 		public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
 		{
-			var data = new PlayerInputData
+			var data = new ClickInputData
 			{
-				Move = Move
+				Click = 0
 			};
-			
 			dstManager.AddComponentData(entity, data);
 		}
 	}
