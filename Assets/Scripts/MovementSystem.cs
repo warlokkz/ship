@@ -11,7 +11,7 @@ namespace Ship.Project
 	public class MovementSystem : JobComponentSystem
 	{
 		[BurstCompile]
-		struct MovementJob : IJobForEach<Translation, PlayerInputData>
+		struct MovementJob : IJobProcessComponentData<Translation, PlayerInputData>
 		{
 			public float DeltaTime;
 
