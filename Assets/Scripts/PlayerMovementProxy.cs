@@ -5,16 +5,16 @@ using UnityEngine;
 namespace Ship.Project
 {
 	[RequiresEntityConversion]
-	public class PlayerInputComponentProxy : MonoBehaviour, IConvertGameObjectToEntity
+	public class PlayerMovementProxy : MonoBehaviour, IConvertGameObjectToEntity
 	{
-		public float3 Move;
+		public float MoveSpeed;
 		
 		// The MonoBehaviour data is converted to ComponentData on the entity.
 		public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
 		{
-			var data = new PlayerInputData
+			var data = new PlayerMovementData
 			{
-				Move = Move
+				MoveSpeed = MoveSpeed
 			};
 			
 			dstManager.AddComponentData(entity, data);

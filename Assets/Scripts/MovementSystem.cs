@@ -3,6 +3,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.Physics;
 using Unity.Physics.Systems;
 using Unity.Transforms;
 using UnityEngine;
@@ -16,18 +17,21 @@ namespace Ship.Project
 		private ClickSystem m_ClickSystem;
 		
 		[BurstCompile]
-		struct MovementJob : IJobForEach<Translation, PlayerInputData>
+		struct MovementJob : IJobForEach<Translation, PlayerMovementData>
 		{
 			public float DeltaTime;
 			public float3 Move;
 
-			public void Execute(ref Translation translation, [ReadOnly] ref PlayerInputData input)
+			public void Execute(ref Translation translation, [ReadOnly] ref PlayerMovementData movementData)
 			{
+				var x = translation.Value.x + Move.x * DeltaTime;
+				var z = translation.Value.z + Move.z * DeltaTime;
+				
 				translation.Value = new float3
 				{
-					x = translation.Value.x + Move.x * DeltaTime,
+					x = x,
 					y = translation.Value.y,
-					z = translation.Value.z + Move.z * DeltaTime
+					z = z
 				};
 			}
 		}
@@ -44,6 +48,7 @@ namespace Ship.Project
 		protected override JobHandle OnUpdate(JobHandle inputDeps)
 		{
 			ComponentDataFromEntity<Translation> Positions = GetComponentDataFromEntity<Translation>(true);
+			ComponentDataFromEntity<PhysicsVelocity> Velocities = GetComponentDataFromEntity<PhysicsVelocity>();
 
 			ClickSystem.ClickData clickData = m_ClickSystem.ClickDatas[0];
 			
