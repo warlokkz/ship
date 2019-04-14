@@ -17,22 +17,29 @@ namespace Ship.Project
 		private ClickSystem m_ClickSystem;
 		
 		[BurstCompile]
-		struct MovementJob : IJobForEach<Translation, PlayerMovementData>
+		struct MovementJob : IJobForEach<Translation, Rotation, PlayerMovementData>
 		{
 			public float DeltaTime;
 			public float3 Move;
 
-			public void Execute(ref Translation translation, [ReadOnly] ref PlayerMovementData movementData)
-			{
-				var x = translation.Value.x + Move.x * DeltaTime;
-				var z = translation.Value.z + Move.z * DeltaTime;
+			public void Execute(
+				ref Translation translation,
+				ref Rotation rotation,
+				[ReadOnly] ref PlayerMovementData movementData
+			) {
 				
-				translation.Value = new float3
-				{
-					x = x,
-					y = translation.Value.y,
-					z = z
-				};
+				translation.Value += DeltaTime * movementData.MoveSpeed * math.forward(rotation.Value);
+
+				var angle = math.atan2(
+					Move.z - translation.Value.z,
+					Move.x - translation.Value.x
+				) * 180 / math.PI;
+
+				rotation.Value = math.mul(
+					math.normalize(rotation.Value),
+					quaternion.AxisAngle(math.up(),
+					(float)angle)
+				);
 			}
 		}
 
