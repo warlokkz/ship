@@ -1,10 +1,8 @@
-﻿using System.Collections.Concurrent;
-using System.Numerics;
-using Unity.Burst;
-using Unity.Collections;
+﻿using Unity.Burst;
 using Unity.Entities;
 using Unity.Jobs;
-using UnityEngine.AI;
+using Unity.Mathematics;
+using UnityEngine;
 
 namespace Ship.Project {
     
@@ -17,28 +15,21 @@ namespace Ship.Project {
             public Entity Entity;
         }
 
-        private NativeQueue<AgentData> _needsWayPoint;
-        private ConcurrentDictionary<int, Vector3[]> _waypoints = new ConcurrentDictionary<int, Vector3[]>();
-        private NativeHashMap<int, AgentData> _pathFindingData;
-        
         [BurstCompile]
-        private struct DetectNextWaypointJob : IJobParallelFor
+        private struct MovementJob : IJobForEach<NavAgent>
         {
-            public int NavMeshQuerySystemVersion;
-            public NativeQueue<AgentData>.Concurrent NeedsWayPoint;
+            private readonly float DeltaTime;
+            private readonly float3 Up;
+            private readonly float3 One;
 
-            public void Execute(int index)
+            public MovementJob(float deltaTime)
             {
-                
+                DeltaTime = deltaTime;
+                Up = Vector3.up;
+                One = Vector3.one;
             }
-        }
 
-        [BurstCompile]
-        private struct MovementJob : IJobParallelFor
-        {
-            
-            
-            public void Execute(int index)
+            public void Execute(ref NavAgent agent)
             {
                 throw new System.NotImplementedException();
             }
