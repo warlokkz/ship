@@ -22,7 +22,7 @@ namespace Ship.Project
 		public NativeArray<ClickData> ClickDatas;
 		public struct ClickData
 		{
-			public float3 Move;
+			public float3 ClickDestination;
 		}
 		
 		[BurstCompile]
@@ -51,7 +51,7 @@ namespace Ship.Project
 					float3 pointInWorld = Ray.Origin + Ray.Direction * fraction;
 					ClickDatas[0] = new ClickData
 					{
-						Move = new float3 {
+						ClickDestination = new float3 {
 							x = pointInWorld.x,
 							y = 0,
 							z = pointInWorld.z

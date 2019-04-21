@@ -10,6 +10,7 @@ using UnityEngine;
 
 namespace Ship.Project
 {
+	[DisableAutoCreation]
 	[UpdateBefore(typeof(BuildPhysicsWorld))]
 	public class MovementSystem : JobComponentSystem
 	{
@@ -62,7 +63,7 @@ namespace Ship.Project
 			var job = new MovementJob
 			{
 				DeltaTime = Time.deltaTime,
-				Move = clickData.Move
+				Move = clickData.ClickDestination
 			};
 
 			return job.Schedule(this, inputDeps);
