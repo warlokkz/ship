@@ -8,7 +8,8 @@ namespace Ship.Project
 	{
 		public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
 		{
-			var data = new NavAgent();
+			Transform t = transform;
+			var data = new NavAgent(t.position, t.rotation);
 			
 			dstManager.AddComponentData(entity, data);
 		}

@@ -29,7 +29,6 @@ namespace Ship.Project
 		struct ClickJob : IJob
 		{
 			[ReadOnly] public CollisionWorld CollisionWorld;
-			[ReadOnly] public int NumDynamicBodies;
 			public NativeArray<ClickData> ClickDatas;
 			public Ray Ray;
 			public void Execute()
@@ -39,11 +38,8 @@ namespace Ship.Project
 				var rayCastInput = new RaycastInput {Ray = Ray, Filter = CollisionFilter.Default};
 				if (CollisionWorld.CastRay(rayCastInput, out RaycastHit hit))
 				{
-					if (hit.RigidBodyIndex < NumDynamicBodies)
-					{
-						hitBody = CollisionWorld.Bodies[hit.RigidBodyIndex];
-						fraction = hit.Fraction;
-					}
+					hitBody = CollisionWorld.Bodies[hit.RigidBodyIndex];
+					fraction = hit.Fraction;
 				}
 
 				if (hitBody != null)
@@ -107,7 +103,6 @@ namespace Ship.Project
 				handle = new ClickJob
 				{
 					CollisionWorld = m_BuildPhysicsWorldSystem.PhysicsWorld.CollisionWorld,
-					NumDynamicBodies = m_BuildPhysicsWorldSystem.PhysicsWorld.NumDynamicBodies,
 					ClickDatas = ClickDatas,
 					Ray = ray
 				}.Schedule(
