@@ -61,7 +61,14 @@ namespace Ship.Project {
 					// Now that the agent is facing in the direction of the destination, find the next forward
 					// position based on current move speed and deltaTime.
 					float3 forward = math.forward(agent.Rotation) * agent.CurrentMoveSpeed * DeltaTime;
-					agent.NextPosition = agent.Position + forward;
+					float3 nextPosition = agent.Position + forward;
+					Vector3 nextHeading = agent.Destination - nextPosition;
+
+					if (nextHeading.magnitude > 0.1f) {
+						agent.NextPosition = nextPosition;
+					} else {
+						agent.NextPosition = agent.Destination;
+					}
 				}
             }
         }
