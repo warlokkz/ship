@@ -2,22 +2,23 @@
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
-using Unity.Physics.Systems;
 using UnityEngine;
+using ClickData = Ship.Project.ClickSystem.ClickData;
 
 namespace Ship.Project {
     
-	[UpdateAfter(typeof(BuildPhysicsWorld))]
+	[UpdateAfter(typeof(ClickSystem))]
     public class NavigationSystem : JobComponentSystem
-    {
-		private ClickSystem m_ClickSystem;
+	{
+
+		private Entity _clickDataEntity;
+		private EntityManager _entityManager;
 
         [BurstCompile]
         private struct NavAgentMovementJob : IJobForEach<NavAgent>
         {
-			public float3 ClickDestination;
             public float DeltaTime;
-            public float3 Up;
+			public float3 ClickDestination;
 
             public void Execute(ref NavAgent agent)
             {
@@ -40,7 +41,10 @@ namespace Ship.Project {
 					 * This block sets the rotation of the agent towards the destination if the agent
 					 * has not reached it yet.
 					 */
-					Vector3 targetRotation = Quaternion.LookRotation(heading, Up).eulerAngles;
+					Vector3 targetRotation = Quaternion.LookRotation(
+						heading,
+						Vector3.up
+					).eulerAngles;
 					targetRotation.x = 0;
 					targetRotation.z = 0;
 
@@ -72,22 +76,22 @@ namespace Ship.Project {
 				}
             }
         }
-        
-		protected override void OnCreate()
+
+		protected override void OnCreateManager()
 		{
-			m_ClickSystem = World.GetOrCreateSystem<ClickSystem>();
+			_entityManager = World.EntityManager;
+			_clickDataEntity = GetSingletonEntity<ClickData>();
 		}
-        
-        protected override JobHandle OnUpdate(JobHandle inputDeps)
-        {
-			ClickSystem.ClickData clickData = m_ClickSystem.ClickDatas[0];
+
+		protected override JobHandle OnUpdate(JobHandle inputDeps)
+		{
+			ClickData clickData = _entityManager.GetComponentData<ClickData>(_clickDataEntity);
+			
 			var job = new NavAgentMovementJob
 			{
-				DeltaTime = Time.deltaTime,
 				ClickDestination = clickData.ClickDestination,
-				Up = Vector3.up
+				DeltaTime = Time.deltaTime
 			};
-			
 			return job.Schedule(this, inputDeps);
         }
     }
