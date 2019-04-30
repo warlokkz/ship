@@ -14,7 +14,7 @@ namespace Ship.Project
 		private BeginInitializationEntityCommandBufferSystem _entityCommandBufferSystem;
 
 		[BurstCompile]
-		private struct WaypointSpawnJob : IJobForEach<CursorComponent>
+		private struct CursorSpawnJob : IJobForEach<CursorComponent>
 		{
 			public float3 ClickDestination;
 			public EntityCommandBuffer CommandBuffer;
@@ -30,7 +30,7 @@ namespace Ship.Project
 		{
 			ClickSystem.ClickData clickData = _entityManager.GetComponentData<ClickSystem.ClickData>(_clickDataEntity);
 			
-			var job = new WaypointSpawnJob
+			var job = new CursorSpawnJob
 			{
 				ClickDestination = clickData.ClickDestination,
 				CommandBuffer = _entityCommandBufferSystem.CreateCommandBuffer()
