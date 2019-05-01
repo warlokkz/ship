@@ -17,6 +17,7 @@ namespace Ship.Project
 
 		public struct ClickData : IComponentData
 		{
+			public bool Active;
 			public float3 ClickDestination;
 		}
 		
@@ -32,7 +33,7 @@ namespace Ship.Project
 		protected override void OnUpdate()
 		{
 			var collisionWorld = m_BuildPhysicsWorldSystem.PhysicsWorld.CollisionWorld;
-			
+
 			if (Input.GetMouseButtonDown(1) && Camera.main != null)
 			{
 				// Create a new Ray from the camera screen
@@ -58,6 +59,7 @@ namespace Ship.Project
 					float3 pointInWorld = ray.Origin + ray.Direction * fraction;
 					SetSingleton(new ClickData
 					{
+						Active = true,
 						ClickDestination = new float3
 						{
 							x = pointInWorld.x,
@@ -66,6 +68,9 @@ namespace Ship.Project
 						}
 					});
 				}
+			} else
+			{
+				SetSingleton(new ClickData());
 			}
 		}
 	}

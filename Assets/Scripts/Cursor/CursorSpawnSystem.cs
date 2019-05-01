@@ -1,7 +1,6 @@
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Jobs;
-using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Ship.Project
@@ -16,13 +15,14 @@ namespace Ship.Project
 		[BurstCompile]
 		private struct CursorSpawnJob : IJobForEach<CursorComponent>
 		{
-			public float3 ClickDestination;
+			public ClickSystem.ClickData m_ClickData;
 			public EntityCommandBuffer CommandBuffer;
 
 			public void Execute(ref CursorComponent cursorComponent)
 			{
-				var instance = CommandBuffer.Instantiate(cursorComponent.Prefab);
-				CommandBuffer.SetComponent(instance, new Translation { Value = ClickDestination });
+				if (!m_ClickData.Active) return;
+				Entity instance = CommandBuffer.Instantiate(cursorComponent.Prefab);
+				CommandBuffer.SetComponent(instance, new Translation {Value = m_ClickData.ClickDestination});
 			}
 		}
 
@@ -32,7 +32,7 @@ namespace Ship.Project
 			
 			var job = new CursorSpawnJob
 			{
-				ClickDestination = clickData.ClickDestination,
+				m_ClickData = clickData,
 				CommandBuffer = _entityCommandBufferSystem.CreateCommandBuffer()
 			}.ScheduleSingle(this, inputDeps);
 

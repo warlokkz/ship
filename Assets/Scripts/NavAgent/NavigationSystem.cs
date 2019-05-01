@@ -18,13 +18,16 @@ namespace Ship.Project {
         private struct NavAgentMovementJob : IJobForEach<NavAgent>
         {
             public float DeltaTime;
-			public float3 ClickDestination;
+			public ClickData m_ClickData;
 
             public void Execute(ref NavAgent agent)
             {
 				// find the magnitude of the vector the agent is currently heading towards based on
 				// the previous position.
-				agent.Destination = ClickDestination;
+				if (m_ClickData.Active) {
+					agent.Destination = m_ClickData.ClickDestination;
+				}
+				
 				agent.Position = agent.NextPosition;
 				Vector3 heading = agent.Destination - agent.Position;
 				agent.RemainingDistance = heading.magnitude;
@@ -68,11 +71,7 @@ namespace Ship.Project {
 					float3 nextPosition = agent.Position + forward;
 					Vector3 nextHeading = agent.Destination - nextPosition;
 
-					if (nextHeading.magnitude > 0.1f) {
-						agent.NextPosition = nextPosition;
-					} else {
-						agent.NextPosition = agent.Destination;
-					}
+					agent.NextPosition = nextHeading.magnitude > 0.1f ? nextPosition : agent.Destination;
 				}
             }
         }
@@ -89,7 +88,7 @@ namespace Ship.Project {
 			
 			var job = new NavAgentMovementJob
 			{
-				ClickDestination = clickData.ClickDestination,
+				m_ClickData = clickData,
 				DeltaTime = Time.deltaTime
 			};
 			return job.Schedule(this, inputDeps);
