@@ -13,15 +13,15 @@ namespace Ship.Project
 		private BeginInitializationEntityCommandBufferSystem _entityCommandBufferSystem;
 
 		[BurstCompile]
-		private struct CursorSpawnJob : IJobForEach<CursorComponent>
+		private struct CursorSpawnJob : IJobForEach<CursorSpawnerComponent>
 		{
 			public ClickSystem.ClickData m_ClickData;
 			public EntityCommandBuffer CommandBuffer;
 
-			public void Execute(ref CursorComponent cursorComponent)
+			public void Execute(ref CursorSpawnerComponent cursorSpawnerComponent)
 			{
 				if (!m_ClickData.Active) return;
-				Entity instance = CommandBuffer.Instantiate(cursorComponent.Prefab);
+				Entity instance = CommandBuffer.Instantiate(cursorSpawnerComponent.Prefab);
 				CommandBuffer.SetComponent(instance, new Translation {Value = m_ClickData.ClickDestination});
 			}
 		}

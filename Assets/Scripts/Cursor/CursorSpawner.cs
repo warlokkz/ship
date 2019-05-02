@@ -5,10 +5,9 @@ using UnityEngine;
 namespace Ship.Project
 {
 	[RequiresEntityConversion]
-	public class CursorProxy : MonoBehaviour, IDeclareReferencedPrefabs, IConvertGameObjectToEntity
+	public class CursorSpawner : MonoBehaviour, IDeclareReferencedPrefabs, IConvertGameObjectToEntity
 	{
 		public GameObject Prefab;
-		
 		public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
 		{
 			referencedPrefabs.Add(Prefab);
@@ -16,11 +15,13 @@ namespace Ship.Project
 
 		public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
 		{
-			var cursorData = new CursorComponent
-			{
-				Prefab = conversionSystem.GetPrimaryEntity(Prefab)
-			};
+			var cursorData = new CursorSpawnerComponent { Prefab = conversionSystem.GetPrimaryEntity(Prefab) };
 			dstManager.AddComponentData(entity, cursorData);
 		}
+	}
+	
+	public struct CursorSpawnerComponent : IComponentData
+	{
+		public Entity Prefab;
 	}
 }
