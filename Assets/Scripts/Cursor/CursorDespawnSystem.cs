@@ -35,11 +35,11 @@ namespace Ship.Project
 		}
 		protected override JobHandle OnUpdate(JobHandle inputDeps)
 		{
-			var dt = Time.deltaTime;
-			var commandBuffer = barrier.CreateCommandBuffer().ToConcurrent();
+			EntityCommandBuffer.Concurrent commandBuffer = barrier.CreateCommandBuffer().ToConcurrent();
+
 			var job = new CursorDespawnJob
 			{
-				DeltaTime = dt,
+				DeltaTime = Time.deltaTime,
 				CommandBuffer = commandBuffer
 			}.Schedule(this, inputDeps);
 			
