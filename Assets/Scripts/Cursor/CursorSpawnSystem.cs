@@ -5,7 +5,7 @@ using Unity.Transforms;
 
 namespace Ship.Project
 {
-	[UpdateAfter(typeof(ClickSystem))]
+	[UpdateAfter(typeof(PlayerInputSystem))]
 	public class CursorSpawnSystem : JobComponentSystem
 	{
 		private Entity _clickDataEntity;
@@ -15,7 +15,7 @@ namespace Ship.Project
 		[BurstCompile]
 		private struct CursorSpawnJob : IJobForEach<CursorSpawnerComponent>
 		{
-			public ClickSystem.ClickData m_ClickData;
+			public PlayerInputSystem.ClickData m_ClickData;
 			public EntityCommandBuffer CommandBuffer;
 
 			public void Execute(ref CursorSpawnerComponent cursorSpawnerComponent)
@@ -28,7 +28,7 @@ namespace Ship.Project
 
 		protected override JobHandle OnUpdate(JobHandle inputDeps)
 		{
-			ClickSystem.ClickData clickData = _entityManager.GetComponentData<ClickSystem.ClickData>(_clickDataEntity);
+			PlayerInputSystem.ClickData clickData = _entityManager.GetComponentData<PlayerInputSystem.ClickData>(_clickDataEntity);
 			
 			var job = new CursorSpawnJob
 			{
@@ -44,7 +44,7 @@ namespace Ship.Project
 		protected override void OnCreateManager()
 		{
 			_entityManager = World.EntityManager;
-			_clickDataEntity = GetSingletonEntity<ClickSystem.ClickData>();
+			_clickDataEntity = GetSingletonEntity<PlayerInputSystem.ClickData>();
 			_entityCommandBufferSystem = World.GetOrCreateSystem<BeginInitializationEntityCommandBufferSystem>();
 		}
 	}

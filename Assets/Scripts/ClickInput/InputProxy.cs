@@ -6,7 +6,7 @@ namespace Ship.Project
 	public struct Clickable : IComponentData { }
 
 	[RequiresEntityConversion]
-	public class ClickableProxy : MonoBehaviour, IConvertGameObjectToEntity
+	public class InputProxy : MonoBehaviour, IConvertGameObjectToEntity
 	{
 		public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
 		{

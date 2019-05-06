@@ -3,11 +3,11 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
-using ClickData = Ship.Project.ClickSystem.ClickData;
+using ClickData = Ship.Project.PlayerInputSystem.ClickData;
 
 namespace Ship.Project {
     
-	[UpdateAfter(typeof(ClickSystem))]
+	[UpdateAfter(typeof(PlayerInputSystem))]
     public class NavigationSystem : JobComponentSystem
 	{
 
