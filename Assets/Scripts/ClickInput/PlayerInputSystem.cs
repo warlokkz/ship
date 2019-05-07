@@ -20,6 +20,11 @@ namespace Ship.Project
 			public bool Active;
 			public float3 ClickDestination;
 		}
+
+		public struct FireInputData : IComponentData
+		{
+			public float3 FireDirection;
+		}
 		
 		protected override void OnCreateManager()
 		{
@@ -28,6 +33,18 @@ namespace Ship.Project
 			// initialize a new entity for click-data and set a blank singleton.
 			EntityManager.CreateEntity(typeof(ClickData));
 			SetSingleton(new ClickData());
+			
+			// do the same for FireInputData
+			EntityManager.CreateEntity(typeof(FireInputData));
+			SetSingleton(new FireInputData
+			{
+				FireDirection = new float3
+				{
+					x = float.PositiveInfinity,
+					y = float.PositiveInfinity,
+					z = float.PositiveInfinity
+				}
+			});
 		}
 
 		protected override void OnUpdate()
@@ -56,9 +73,27 @@ namespace Ship.Project
 			{
 				if (GetPointInWorldFromMousePosition(out float3 pointInWorld))
 				{
-					Debug.Log("firing at point:");
-					Debug.Log(pointInWorld);
+					SetSingleton(new FireInputData
+					{
+						FireDirection = new float3
+						{
+							x = pointInWorld.x,
+							y = 0,
+							z = pointInWorld.y
+						}
+					});
 				}
+			} else
+			{
+				SetSingleton(new FireInputData
+				{
+					FireDirection = new float3
+					{
+						x = float.PositiveInfinity,
+						y = float.PositiveInfinity,
+						z = float.PositiveInfinity
+					}
+				});
 			}
 		}
 
