@@ -8,7 +8,7 @@ namespace Ship.Project
 		public float3 StartPosition;
 		public float3 EndPosition;
 		public float3 CurrentPosition;
-		public float MaxAge;
+		public float Decay;
 		public float Velocity;
 	}
 }

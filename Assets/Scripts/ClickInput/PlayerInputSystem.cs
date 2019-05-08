@@ -79,7 +79,7 @@ namespace Ship.Project
 						{
 							x = pointInWorld.x,
 							y = 0,
-							z = pointInWorld.y
+							z = pointInWorld.z
 						}
 					});
 				}

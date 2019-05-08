@@ -11,11 +11,6 @@ namespace Ship.Project
 		[BurstCompile]
 		private struct NavAgentSyncJob : IJobForEach<NavAgent, Translation, Rotation>
 		{
-			public NavAgentSyncJob(JobHandle inputDeps)
-			{
-				throw new System.NotImplementedException();
-			}
-
 			public void Execute(ref NavAgent navAgent, ref Translation translation, ref Rotation rotation)
 			{
 				translation.Value = navAgent.Position;
