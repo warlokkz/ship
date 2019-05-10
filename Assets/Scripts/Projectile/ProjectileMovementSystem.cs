@@ -1,7 +1,10 @@
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.Physics;
+using Unity.Physics.Extensions;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -10,12 +13,16 @@ namespace Ship.Project
 	[UpdateAfter(typeof(ProjectileSpawnSystem))]
 	public class ProjectileMovementSystem : JobComponentSystem
 	{
+		EntityCommandBufferSystem barrier;
+		
 		[BurstCompile]
-		public struct ProjectileMovementJob : IJobForEach<Projectile, Translation, Rotation>
+		public struct ProjectileMovementJob : IJobForEachWithEntity<Projectile, PhysicsMass, PhysicsVelocity>
 		{
 			public float DeltaTime;
+			[WriteOnly]
+			public EntityCommandBuffer.Concurrent CommandBuffer;
 			
-			public void Execute(ref Projectile projectile, ref Translation translation, ref Rotation rotation)
+			public void Execute(Entity entity, int index, ref Projectile projectile, ref PhysicsMass mass, ref PhysicsVelocity vel)
 			{
 				var moveDistance = DeltaTime * projectile.Velocity;
 				float3 direction = math.normalize(projectile.EndPosition - projectile.StartPosition);
@@ -24,24 +31,30 @@ namespace Ship.Project
 
 				projectile.CurrentPosition = position;
 				projectile.Velocity = math.max(0, projectile.Velocity - projectile.Decay);
-
-				projectile.CurrentPosition.y = math.max(
-					x: -2f,
-					y: projectile.CurrentPosition.y - 0.0075f
-				);
-
-				if (projectile.Velocity <= 0f) {
-				}
 				
-				translation.Value = projectile.CurrentPosition;
-				rotation.Value = rot;
+				mass.Transform.rot = rot;
+				CommandBuffer.SetComponent(index, entity, mass);
 			}
 		}
 		
 		protected override JobHandle OnUpdate(JobHandle inputDeps)
 		{
-			var job = new ProjectileMovementJob { DeltaTime = Time.deltaTime };
-			return job.Schedule(this, inputDeps);
+			EntityCommandBuffer.Concurrent commandBuffer = barrier.CreateCommandBuffer().ToConcurrent();
+
+			var job = new ProjectileMovementJob
+			{
+				DeltaTime = Time.deltaTime,
+				CommandBuffer = commandBuffer
+			}.Schedule(this, inputDeps);
+			
+			job.Complete();
+
+			return job;
+		}
+
+		protected override void OnCreate()
+		{
+			barrier = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
 		}
 	}
 }
