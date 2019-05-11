@@ -2,24 +2,26 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
+using Unity.Physics.Systems;
+using Unity.Transforms;
 
 namespace Ship.Project
 {
-	[UpdateAfter(typeof(ProjectileMovementSystem))]
+	[UpdateAfter(typeof(StepPhysicsWorld))]
 	public class ProjectileDespawnSystem : JobComponentSystem
 	{
 		EntityCommandBufferSystem barrier;
 
 		
 		[BurstCompile]
-		public struct ProjectileDespawnJob : IJobForEachWithEntity<Projectile>
+		public struct ProjectileDespawnJob : IJobForEachWithEntity<Projectile, Translation>
 		{
 			[WriteOnly]
 			public EntityCommandBuffer.Concurrent CommandBuffer;
 			
-			public void Execute(Entity entity, int jobIndex, ref Projectile projectile)
+			public void Execute(Entity entity, int jobIndex, ref Projectile projectile, ref Translation trans)
 			{
-				if (projectile.Velocity <= 0f)
+				if (trans.Value.y <= -2f)
 				{
 					CommandBuffer.DestroyEntity(jobIndex, entity);
 				}

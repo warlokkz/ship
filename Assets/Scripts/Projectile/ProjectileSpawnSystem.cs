@@ -3,7 +3,10 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.Physics;
+using Unity.Physics.Extensions;
 using Unity.Transforms;
+using UnityEngine;
 
 namespace Ship.Project
 {
@@ -29,14 +32,25 @@ namespace Ship.Project
 
 				Entity instance =  CommandBuffer.Instantiate(Prefab);
 				CommandBuffer.SetComponent(instance, new Translation { Value = SpawnPosition });
-				CommandBuffer.AddComponent(instance, new Projectile
+
+				CommandBuffer.SetComponent(instance, new PhysicsVelocity
 				{
-					CurrentPosition = SpawnPosition,
-					StartPosition = SpawnPosition,
-					EndPosition = fireInput.FireDirection,
-					Velocity = 20f,
-					Decay = 0.1f
+					Linear = new float3
+					{
+						x = (fireInput.FireDirection.x - SpawnPosition.x) / 5f,
+						y = 9.8f / 4f,
+						z = (fireInput.FireDirection.z - SpawnPosition.z) / 5f
+					}
 				});
+				
+				float3 direction = math.normalize(fireInput.FireDirection - SpawnPosition);
+				quaternion rot = quaternion.LookRotation(direction, Vector3.up);
+				
+				CommandBuffer.SetComponent(instance, new PhysicsMass {
+					Transform = { rot = rot }
+				});
+
+				CommandBuffer.AddComponent(instance, new Projectile());
 			}
 		}
 		
