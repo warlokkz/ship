@@ -109,7 +109,15 @@ namespace Ship.Project
 			RigidBody? hitBody = null;
 
 			// Now cast the ray and see if the it hits any colliders.
-			var rayCastInput = new RaycastInput {Ray = ray, Filter = CollisionFilter.Default};
+			var rayCastInput = new RaycastInput
+			{
+				Ray = ray, Filter = new CollisionFilter
+				{
+					CategoryBits = ~0u << 2,
+					MaskBits = ~0u << 2
+				}
+			};
+
 			if (collisionWorld.CastRay(rayCastInput, out RaycastHit hit))
 			{
 				hitBody = collisionWorld.Bodies[hit.RigidBodyIndex];
