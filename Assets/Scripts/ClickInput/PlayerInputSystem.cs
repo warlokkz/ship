@@ -21,9 +21,16 @@ namespace Ship.Project
 			public float3 ClickDestination;
 		}
 
+		/// <summary>
+		/// Component created when the user declares to "Fire" from the ship.
+		/// </summary>
 		public struct FireInputData : IComponentData
 		{
-			public float3 FireDirection;
+			/// <summary>
+			/// A float3 position in the world where the user declared to
+			/// "Fire".
+			/// </summary>
+			public float3 destination;
 		}
 		
 		protected override void OnCreateManager()
@@ -38,7 +45,7 @@ namespace Ship.Project
 			EntityManager.CreateEntity(typeof(FireInputData));
 			SetSingleton(new FireInputData
 			{
-				FireDirection = new float3
+				destination = new float3
 				{
 					x = float.PositiveInfinity,
 					y = float.PositiveInfinity,
@@ -75,7 +82,7 @@ namespace Ship.Project
 				{
 					SetSingleton(new FireInputData
 					{
-						FireDirection = new float3
+						destination = new float3
 						{
 							x = pointInWorld.x,
 							y = 0,
@@ -87,7 +94,7 @@ namespace Ship.Project
 			{
 				SetSingleton(new FireInputData
 				{
-					FireDirection = new float3
+					destination = new float3
 					{
 						x = float.PositiveInfinity,
 						y = float.PositiveInfinity,
@@ -113,8 +120,8 @@ namespace Ship.Project
 			{
 				Ray = ray, Filter = new CollisionFilter
 				{
-					CategoryBits = ~0u << 2,
-					MaskBits = ~0u << 2
+					CategoryBits = ~0u << 2, // Belongs to group Raycasts
+					MaskBits = ~0u << 2 // Only collides with Raycasts group
 				}
 			};
 
