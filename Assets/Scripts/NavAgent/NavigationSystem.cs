@@ -93,5 +93,5 @@ namespace Ship.Project {
 			};
 			return job.Schedule(this, inputDeps);
         }
-    }
+	}
 }
