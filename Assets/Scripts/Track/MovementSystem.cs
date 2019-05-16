@@ -3,35 +3,33 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
-using Unity.Physics.Systems;
 using Unity.Transforms;
-using UnityEngine;
 
-namespace Ship.Project
+namespace Ship.Project.Track
 {
-	[UpdateAfter(typeof(BuildPhysicsWorld))]
-	public class TrackMovementSystem : JobComponentSystem
+	[UpdateAfter(typeof(GenerateMoveTickSystem))]
+	public class MovementSystem : JobComponentSystem
 	{
-
+		private Entity _moveTickEntity;
+		private EntityManager _entityManager;
 		private EndSimulationEntityCommandBufferSystem _barrier;
 		
 		[BurstCompile]
-		[RequireComponentTag(typeof(TrackComponent))]
+		[RequireComponentTag(typeof(BelongsToTrack))]
 		private struct TrackMovementJob : IJobForEachWithEntity<Translation>
 		{
 			[ReadOnly]
 			public EntityCommandBuffer.Concurrent CommandBuffer;
-			public float DeltaTime;
+
+			public float deltaDistance;
 			
 			public void Execute(Entity entity, int index, ref Translation translation)
 			{
-				var speed = 1f;
-
 				CommandBuffer.SetComponent(index, entity, new Translation
 					{
 						Value = new float3
 						{
-							x = translation.Value.x - speed * DeltaTime,
+							x = translation.Value.x - deltaDistance,
 							y = translation.Value.y,
 							z = translation.Value.z
 						}
@@ -42,10 +40,12 @@ namespace Ship.Project
 		
 		protected override JobHandle OnUpdate(JobHandle inputDeps)
 		{
+			var moveTick = _entityManager.GetComponentData<MoveTick>(_moveTickEntity);
+			
 			var job = new TrackMovementJob
 			{
 				CommandBuffer = _barrier.CreateCommandBuffer().ToConcurrent(),
-				DeltaTime = Time.deltaTime
+				deltaDistance = moveTick.deltaDistance
 			}.Schedule(this, inputDeps);
 			
 			_barrier.AddJobHandleForProducer(job);
@@ -55,6 +55,8 @@ namespace Ship.Project
 
 		protected override void OnCreate()
 		{
+			_entityManager = World.EntityManager;
+			_moveTickEntity = GetSingletonEntity<MoveTick>();
 			_barrier = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 		}
 	}
