@@ -3,7 +3,7 @@ using Unity.Mathematics;
 
 namespace Ship.Project.Track
 {
-	public struct TrackPosition : IComponentData
+	public struct TrackWorldPosition : IComponentData
 	{
 		public float worldLength;
 		public float3 startPosition;
