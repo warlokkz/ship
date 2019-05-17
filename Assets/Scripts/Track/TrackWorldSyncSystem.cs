@@ -17,17 +17,18 @@ namespace Ship.Project.Track
 			var moveTick = _entityManager.GetComponentData<MoveTick>(_moveTickEntity);
 			var trackPosition = _entityManager.GetComponentData<TrackWorldPosition>(_positionEntity);
 
+			var newWorldLength = trackPosition.worldLength;
+
 			Entities.WithAll<RegisterTrackSegment>().ForEach(
 				action: (Entity entity, ref RenderBounds bounds) =>
 				{
-					Debug.Log(bounds.Value.Size);
-					
+					newWorldLength += bounds.Value.Size.x;
 					PostUpdateCommands.RemoveComponent<RegisterTrackSegment>(entity);
 				});
 			
 			SetSingleton(new TrackWorldPosition
 			{
-				worldLength = trackPosition.worldLength - moveTick.deltaDistance
+				worldLength = newWorldLength - moveTick.deltaDistance
 			});
 		}
 
