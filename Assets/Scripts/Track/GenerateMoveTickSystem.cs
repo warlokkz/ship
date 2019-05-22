@@ -16,7 +16,7 @@ namespace Ship.Project.Track
 
 		protected override void OnUpdate()
 		{
-			const float speed = 1f;
+			const float speed = 2f;
 			SetSingleton(new MoveTick
 			{
 				deltaDistance = speed * Time.deltaTime
