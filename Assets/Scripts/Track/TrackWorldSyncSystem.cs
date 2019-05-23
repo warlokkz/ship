@@ -1,11 +1,9 @@
 using Unity.Entities;
-using Unity.Physics;
 using Unity.Rendering;
-using UnityEngine;
 
 namespace Ship.Project.Track
 {
-	[UpdateAfter(typeof(MovementSystem))]
+	[UpdateAfter(typeof(TrackMovementSystem))]
 	public class TrackWorldSyncSystem : ComponentSystem
 	{
 		private Entity _moveTickEntity;

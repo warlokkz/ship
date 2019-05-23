@@ -8,7 +8,7 @@ using Unity.Transforms;
 namespace Ship.Project.Track
 {
 	[UpdateAfter(typeof(GenerateMoveTickSystem))]
-	public class MovementSystem : JobComponentSystem
+	public class TrackMovementSystem : JobComponentSystem
 	{
 		private Entity _moveTickEntity;
 		private EntityManager _entityManager;
