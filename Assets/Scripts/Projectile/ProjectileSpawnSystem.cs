@@ -34,9 +34,9 @@ namespace Ship.Project
 					// or a singleton entity.
 					Linear = new float3
 					{
-						x = (spawnRequest.EndPosition.x - spawnRequest.StartPosition.x) / 5f,
-						y = 9.8f / 4f,
-						z = (spawnRequest.EndPosition.z - spawnRequest.StartPosition.z) / 5f
+						x = (spawnRequest.EndPosition.x - spawnRequest.StartPosition.x) / 2f,
+						y = 7.5f,
+						z = (spawnRequest.EndPosition.z - spawnRequest.StartPosition.z) / 2f
 					}
 				});
 				

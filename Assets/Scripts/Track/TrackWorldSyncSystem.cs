@@ -9,6 +9,8 @@ namespace Ship.Project.Track
 		private Entity _moveTickEntity;
 		private Entity _positionEntity;
 		private EntityManager _entityManager;
+		
+		private const float WORLD_LENGTH_MAX = 60f;
 
 		protected override void OnUpdate()
 		{
